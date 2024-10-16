@@ -43,4 +43,9 @@ export class UserRankService {
 
         return { level, badge };
     }
+    async getLevelByPoints(totalPoints: number): Promise<{ level: number; badge: string }> {
+        return this.categorizeUserLevel(totalPoints);
+    }
+
+       
 }

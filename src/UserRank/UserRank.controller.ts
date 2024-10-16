@@ -1,6 +1,7 @@
-import { Controller, Get, BadRequestException } from '@nestjs/common';
+import { Controller, Get, BadRequestException, Body, Post } from '@nestjs/common';
 import { UserRankService } from './userRank.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { GetLevelByPointsDto } from './dto/get-level-by-points.dto';
 
 @ApiTags('user-rank')
 @Controller('user-rank')
@@ -104,5 +105,30 @@ export class UserRankController {
             scoreRange,
             users,
         };
+    }
+    @Post('level-by-points')
+    @ApiOperation({ summary: 'Get user level based on total points' })
+    @ApiResponse({
+        status: 200,
+        description: 'User level information',
+        schema: {
+            example: {
+                level: 2,
+                badge: 'silver',
+            },
+        },
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Invalid total points',
+        schema: {
+            example: {
+                message: 'Invalid total points',
+                statusCode: 400,
+            },
+        },
+    })
+    async getUserLevelByPoints(@Body() getLevelByPointsDto: GetLevelByPointsDto) {
+        return this.userRankService.getLevelByPoints(getLevelByPointsDto.totalPoints);
     }
 }
