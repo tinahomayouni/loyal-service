@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Point } from 'src/entity/point.entity';
-import { User } from 'src/entity/user.entity';
-import { UserRankService } from './UserRank.service';
-import { UserRankController } from './UserRank.controller';
-
+import { User } from '../entity/user.entity';
+import { UserRankController } from './userRank.controller';
+import { UserRankService } from './userRank.service';
+import { ScoreRangeDAO } from './dao/score-range.dao'; // Ensure this import is correct
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Point]), // Register User and Point entities
-  ],
-  controllers: [UserRankController], // Register the controller
-  providers: [UserRankService], // Register the service
+    imports: [
+        TypeOrmModule.forFeature([User]), // Ensure User entity is registered here
+    ],
+    controllers: [UserRankController],
+    providers: [UserRankService, ScoreRangeDAO], // Register your service here
 })
 export class UserRankModule {}

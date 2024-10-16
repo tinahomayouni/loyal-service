@@ -1,44 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Point } from 'src/entity/point.entity';
-import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
+import { User } from '../entity/user.entity';
+import { ScoreRangeDAO } from './dao/score-range.dao';
 
 @Injectable()
 export class UserRankService {
-  constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(Point)
-    private pointRepository: Repository<Point>,
-  ) {}
+    constructor(
+        @InjectRepository(User)
+        private userRepository: Repository<User>
+    ) {}
 
-  async categorizeUserByPoints(userId: number): Promise<User> {
-    const points = await this.pointRepository
-      .createQueryBuilder('point')
-      .select('SUM(point.points)', 'totalPoints')
-      .where('point.userId = :userId', { userId })
-      .getRawOne();
+    async getUsersByBadge(badge: string): Promise<User[]> {
+        // Retrieve all users from the database
+        const users = await this.userRepository.find();
 
-    const totalPoints = parseInt(points.totalPoints, 10) || 0;
-
-    let level = '';
-    if (totalPoints > 0 && totalPoints <= 100) {
-      level = 'bronze';
-    } else if (totalPoints > 100 && totalPoints <= 250) {
-      level = 'silver';
-    } else if (totalPoints > 250 && totalPoints <= 300) {
-      level = 'gold';
+        // Filter users based on the badge
+        const filteredUsers = users.filter(user => user.badge === badge);
+        return filteredUsers;
     }
 
-    // Update user's level and save in database
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (user) {
-      user.badge = level;
-      user.level = totalPoints; // Optional: Save total points as level
-      return this.userRepository.save(user);
+    async getScoreRange(badge: string): Promise<string> {
+        return ScoreRangeDAO.getScoreRange(badge); // Call static method directly
     }
 
-    throw new Error('User not found');
-  }
+    async categorizeUserLevel(totalPoints: number): Promise<{ level: number; badge: string }> {
+        let level: number;
+        let badge: string;
+
+        if (totalPoints > 0 && totalPoints <= 100) {
+            level = 1; // Bronze
+            badge = 'bronze';
+        } else if (totalPoints > 100 && totalPoints <= 250) {
+            level = 2; // Silver
+            badge = 'silver';
+        } else if (totalPoints > 250) {
+            level = 3; // Gold
+            badge = 'gold';
+        } else {
+            throw new Error('Invalid total points');
+        }
+
+        return { level, badge };
+    }
 }
