@@ -56,6 +56,7 @@ export class UserService {
 
     private generateJwtToken(user: User): string {
         const payload = { sub: user.id, email: user.email };
+        console.log('payload',payload);
         return this.jwtService.sign(payload);
     }
 }

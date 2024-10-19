@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
 import { UserRankService } from './userRank.service';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -46,25 +46,20 @@ export class UserRankController {
     }
 
 
-    @Get('gold')
-@ApiOperation({ summary: 'Get gold users with score range 251 - 300' })
-@ApiResponse({
-    status: 200,
-    description: 'List of gold users with score range.',
-})
-@ApiBearerAuth()  // Document that this route requires authentication
-@UseGuards(JwtAuthGuard)  // Protect this route with JWT Auth
-async getGoldUsers() {
-    const badge = 'gold';
-    const users = await this.userRankService.getUsersByBadge(badge);
-    const scoreRange = await this.userRankService.getScoreRange(badge);
+    @Post('gold')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    async getGoldUsers(@Request() req) {
+        const userDetails = req.user; // Assuming the user information is attached by JwtAuthGuard
+        const badge = 'gold';
+        const users = await this.userRankService.getUsersByBadge(badge);
+        const scoreRange = await this.userRankService.getScoreRange(badge);
 
-    return {
-        badge,
-        scoreRange,
-        users,
-    };
-}
+        return {
+            badge,
+            scoreRange,
+            users,
+        };
+    }
 
-    // You can add more methods here if needed for other ranks or functionalities
 }
