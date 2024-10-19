@@ -42,23 +42,16 @@ export class AuthController {
     }
 
     @Post('login')
-    @ApiOperation({ summary: 'Log in an existing user' })
-    @ApiResponse({
-        status: 200,
-        description: 'User logged in successfully.',
-        type: User,
-    })
-    @ApiResponse({
-        status: 400,
-        description: 'Invalid email or password.',
-        schema: {
-            example: {
-                message: 'Invalid credentials.',
-                error: 'Bad Request',
-                statusCode: 400,
-            },
-        },
-    })
+  @ApiOperation({ summary: 'Log in an existing user' })
+  @ApiResponse({
+    status: 200,
+    description: 'User logged in successfully.',
+    schema: {
+      example: {
+        access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+      }
+    }
+  })
     async login(@Body() loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
         try {
             const user = await this.usersService.login(loginUserDto);
