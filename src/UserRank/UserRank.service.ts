@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { ScoreRangeDAO } from './dao/score-range.dao';
+import { UserLevelDAO } from './dao/user-level.dao';
 
 @Injectable()
 export class UserRankService {
@@ -25,27 +26,10 @@ export class UserRankService {
     }
 
     async categorizeUserLevel(totalPoints: number): Promise<{ level: number; badge: string }> {
-        let level: number;
-        let badge: string;
-
-        if (totalPoints > 0 && totalPoints <= 100) {
-            level = 3; // Bronze
-            badge = 'bronze';
-        } else if (totalPoints > 100 && totalPoints <= 250) {
-            level = 2; // Silver
-            badge = 'silver';
-        } else if (totalPoints > 250) {
-            level =1; // Gold
-            badge = 'gold';
-        } else {
-            throw new Error('Invalid total points');
-        }
-
-        return { level, badge };
+        return UserLevelDAO.getUserLevelAndBadge(totalPoints); // Use DAO method
     }
+
     async getLevelByPoints(totalPoints: number): Promise<{ level: number; badge: string }> {
         return this.categorizeUserLevel(totalPoints);
     }
-
-       
 }
