@@ -48,4 +48,9 @@ export class UsersService {
     
         return user;
       }
+      generateFakeToken(user: User): string {
+        const payload = { sub: user.id, username: user.email };
+        const fakeToken = Buffer.from(JSON.stringify(payload)).toString('base64');
+        return `fake_${fakeToken}`;
+    }
 }

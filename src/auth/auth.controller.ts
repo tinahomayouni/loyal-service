@@ -59,11 +59,11 @@ export class AuthController {
             },
         },
     })
-    async login(@Body() loginUserDto: LoginUserDto): Promise<{ token: string }> {
+    async login(@Body() loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
         try {
             const user = await this.usersService.login(loginUserDto);
-            const token = this.generateStaticToken(user); // Assuming a function to generate a token
-            return { token }; // Return the token instead of the user
+            const access_token = this.usersService.generateFakeToken(user);
+            return { access_token };
         } catch (error) {
             throw new BadRequestException('Invalid credentials.');
         }
