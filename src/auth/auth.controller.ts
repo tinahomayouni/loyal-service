@@ -41,18 +41,8 @@ export class AuthController {
         }
     }
 
-    @Post('login')
-    @ApiOperation({ summary: 'Login and get a JWT token' })
-    @ApiResponse({ status: 200, description: 'JWT access token' })
-    @ApiResponse({ status: 400, description: 'Invalid credentials' })
-
-    async login(@Body() loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
-
-        const user = await this.userService.login(loginUserDto); // This will throw an error if invalid
-
-        // Generate a JWT token
-        const access_token = this.userService.generateJwtToken(user);
-
-        return { access_token }; // Return the token on successful login
+    @Post('login')  // Assuming you have a POST /auth/login route
+    async login(@Body() loginUserDto: LoginUserDto) {
+        return this.userService.login(loginUserDto); // Call the service method
     }
 }
