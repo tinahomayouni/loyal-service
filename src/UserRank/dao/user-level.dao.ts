@@ -6,13 +6,13 @@ export class UserLevelDAO {
       let badge: string;
   
       if (totalPoints > 0 && totalPoints <= 100) {
-        level = 1; // Bronze
+        level = 3; // Bronze
         badge = 'bronze';
       } else if (totalPoints > 100 && totalPoints <= 250) {
         level = 2; // Silver
         badge = 'silver';
       } else if (totalPoints > 250) {
-        level = 3; // Gold
+        level = 1; // Gold
         badge = 'gold';
       } else {
         // Default values if no valid points
