@@ -2,13 +2,13 @@ import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 import { User } from 'src/entity/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto'; 
 import { LoginUserDto } from 'src/user/dto/login.dto'; 
-import { UsersService } from 'src/user/user.service';
+import { UserService } from 'src/user/user.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly userService: UserService) {}
 
     @Post('register')
     @ApiOperation({ summary: 'Register a new user' })
@@ -35,35 +35,24 @@ export class AuthController {
     })
     async register(@Body() createUserDto: CreateUserDto): Promise<User> {
         try {
-            return await this.usersService.register(createUserDto);
+            return await this.userService.register(createUserDto);
         } catch (error) {
             throw new BadRequestException(error.message);
         }
     }
 
     @Post('login')
-  @ApiOperation({ summary: 'Log in an existing user' })
-  @ApiResponse({
-    status: 200,
-    description: 'User logged in successfully.',
-    schema: {
-      example: {
-        access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-      }
-    }
-  })
-    async login(@Body() loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
-        try {
-            const user = await this.usersService.login(loginUserDto);
-            const access_token = this.usersService.generateFakeToken(user);
-            return { access_token };
-        } catch (error) {
-            throw new BadRequestException('Invalid credentials.');
-        }
-    }
+    @ApiOperation({ summary: 'Login and get a JWT token' })
+    @ApiResponse({ status: 200, description: 'JWT access token' })
+    @ApiResponse({ status: 400, description: 'Invalid credentials' })
 
-    private generateStaticToken(user: User): string {
-        // Placeholder for token generation logic (e.g., JWT)
-        return 'static-token'; // Replace with actual token generation logic
+    async login(@Body() loginUserDto: LoginUserDto): Promise<{ access_token: string }> {
+
+        const user = await this.userService.login(loginUserDto); // This will throw an error if invalid
+
+        // Generate a JWT token
+        const access_token = this.userService.generateJwtToken(user);
+
+        return { access_token }; // Return the token on successful login
     }
 }
