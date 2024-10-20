@@ -40,6 +40,7 @@ export class User {
 
     @OneToMany(() => Point, (point) => point.user)
     points: Point[];
+    
 
     @OneToMany(() => File, (file) => file.user)
     files: File[];

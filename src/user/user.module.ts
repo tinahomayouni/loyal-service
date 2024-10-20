@@ -1,20 +1,16 @@
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
-import { UserService } from './user.service';
+import { UsersService } from './user.service';
+import { Point } from 'src/entity/point.entity';
+import { UsersController } from './user.controller';
 
 @Module({
     imports: [
-        ConfigModule, // Ensure ConfigModule is imported
-        TypeOrmModule.forFeature([User]),
-        JwtModule.register({
-            secret: process.env.JWT_SECRET || 'default_secret', // Ensure this is set
-            signOptions: { expiresIn: '60s' },
-        }),
+        TypeOrmModule.forFeature([User, Point]), // Register both User and UserPoint
     ],
-    providers: [UserService],
-    exports: [UserService, TypeOrmModule],
+    providers: [UsersService],
+    exports: [UsersService, TypeOrmModule],
+    controllers:[UsersController]
 })
 export class UserModule {}

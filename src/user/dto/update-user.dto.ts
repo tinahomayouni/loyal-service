@@ -1,16 +1,25 @@
-import { IsEmail, IsOptional } from 'class-validator';
+// src/users/dto/update-user.dto.ts
+import { IsEmail, IsNotEmpty, MinLength, IsIn, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsOptional()
-  name?: string;
-
   @IsEmail()
   @IsOptional()
   email?: string;
 
+  @IsNotEmpty()
+  @MinLength(6)
   @IsOptional()
   password?: string;
 
   @IsOptional()
-  points?: number;
+  level?: number;
+
+  @IsOptional()
+  badge?: string;
+
+  @IsIn(['admin', 'customer'], {
+    message: 'Role must be either admin or customer',
+  })
+  @IsOptional()
+  role?: string;
 }

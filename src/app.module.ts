@@ -16,8 +16,7 @@ import { NotificationsModule } from './notification/noitification.module';
   AuthModule,
   UserRankModule,
   FilesModule,
-  NotificationsModule,
-  UserModule
+  NotificationsModule
 ],
   controllers: [],
   providers: [],

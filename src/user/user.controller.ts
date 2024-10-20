@@ -1,17 +1,19 @@
 // src/users/users.controller.ts
-
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
-import { UserService } from './user.service';
+import { Controller, Post, Get, Param, Put, Delete, Body } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entity/user.entity';
-
+import { UpdatePointsDto } from './dto/update-point.dto';
+import { UsersService } from './user.service';
+import { Point } from 'src/entity/point.entity';
 
 @Controller('api/users')
 export class UsersController {
-  constructor(private readonly usersService: UserService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() user: User): Promise<User> {
-    return this.usersService.create(user);
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -24,9 +26,9 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() user: User): Promise<User> {
-    return this.usersService.update(+id, user);
+  @Put(':id/points') // Endpoint to update user points
+  updatePoints(@Param('id') id: string, @Body() updatePointsDto: UpdatePointsDto): Promise<Point> {
+    return this.usersService.updatePoints(+id, updatePointsDto);
   }
 
   @Delete(':id')
