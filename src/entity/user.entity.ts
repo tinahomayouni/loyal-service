@@ -1,6 +1,8 @@
+// src/entity/user.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { IsEmail, IsNotEmpty, MinLength, IsIn } from 'class-validator';
 import { Point } from './point.entity';
+import { File } from './file.entity'; // Import File entity
 
 @Entity()
 export class User {
@@ -36,4 +38,7 @@ export class User {
 
     @OneToMany(() => Point, (point) => point.user) // Relation with Point entity
     points: Point[];
+
+    @OneToMany(() => File, (file) => file.user) // Relation with File entity
+    files: File[]; // Add this line to establish the relationship
 }
