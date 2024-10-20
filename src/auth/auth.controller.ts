@@ -1,14 +1,14 @@
 import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 import { User } from 'src/entity/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto'; 
-import { LoginUserDto } from 'src/user/dto/login.dto'; 
-import { UserService } from 'src/user/user.service';
+import { LoginUserDto } from 'src/auth/dto/login.dto'; 
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { AuthService } from './auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: AuthService) {}
 
     @Post('register')
     @ApiOperation({ summary: 'Register a new user' })
