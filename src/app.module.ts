@@ -4,6 +4,7 @@ import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { UserRankModule } from './UserRank/UserRank.module';
+import { FilesModule } from './files/file.module';
 
 
 @Module({
@@ -12,7 +13,8 @@ import { UserRankModule } from './UserRank/UserRank.module';
   DatabaseModule,
   UserModule,
   AuthModule,
-  UserRankModule
+  UserRankModule,
+  FilesModule
 ],
   controllers: [],
   providers: [],
