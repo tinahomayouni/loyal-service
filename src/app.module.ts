@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { UserRankModule } from './UserRank/UserRank.module';
 import { FilesModule } from './files/file.module';
+import { NotificationsModule } from './notification/noitification.module';
 
 
 @Module({
@@ -14,8 +15,8 @@ import { FilesModule } from './files/file.module';
   UserModule,
   AuthModule,
   UserRankModule,
-  FilesModule
-],
+  FilesModule,
+  NotificationsModule],
   controllers: [],
   providers: [],
 })

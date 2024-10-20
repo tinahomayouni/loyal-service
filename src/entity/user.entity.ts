@@ -1,15 +1,17 @@
 // src/entity/user.entity.ts
+
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { IsEmail, IsNotEmpty, MinLength, IsIn } from 'class-validator';
 import { Point } from './point.entity';
-import { File } from './file.entity'; // Import File entity
+import { File } from './file.entity';
+import { Notification } from './notification.entity';
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true }) // Ensures email is unique
+    @Column({ unique: true , nullable: true })
     @IsEmail()
     email: string;
 
@@ -18,27 +20,30 @@ export class User {
     @MinLength(6)
     password: string;
 
-    @Column({ type: 'int', default: 1 }) // Default level set to 1
-    level: number; // Level will be 1, 2, or 3
+    @Column({ type: 'int', default: 1 })
+    level: number;
 
-    @Column({ type: 'varchar', default: 'bronze' }) // Default badge set to 'bronze'
-    badge: string; // Badge will be 'bronze', 'silver', or 'gold'
+    @Column({ type: 'varchar', default: 'bronze' })
+    badge: string;
 
-    @Column({ type: 'varchar', default: 'customer' }) // Default role set to 'customer'
+    @Column({ type: 'varchar', default: 'customer', nullable: true  })
     @IsIn(['admin', 'customer'], {
         message: 'Role must be either admin or customer',
     })
-    role: string; // Role will be 'admin' or 'customer'
+    role: string;
 
-    @CreateDateColumn() // Automatically sets the date when the entity is created
+    @CreateDateColumn()
     createdAt: Date;
 
-    @UpdateDateColumn() // Automatically sets the date when the entity is updated
+    @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToMany(() => Point, (point) => point.user) // Relation with Point entity
+    @OneToMany(() => Point, (point) => point.user)
     points: Point[];
 
-    @OneToMany(() => File, (file) => file.user) // Relation with File entity
-    files: File[]; // Add this line to establish the relationship
+    @OneToMany(() => File, (file) => file.user)
+    files: File[];
+
+    @OneToMany(() => Notification, (noitification) => noitification.user)
+    notifications: Notification[];
 }
