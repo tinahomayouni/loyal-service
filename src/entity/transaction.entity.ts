@@ -15,7 +15,6 @@ export class Transaction {
     @CreateDateColumn()
     createdAt: Date;
  
-
     @ManyToOne(() => User, (user) => user.transactions) 
     user: User; 
 }

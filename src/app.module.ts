@@ -7,6 +7,7 @@ import { UserRankModule } from './UserRank/UserRank.module';
 import { FilesModule } from './files/file.module';
 import { NotificationsModule } from './notification/noitification.module';
 import { CompanyModule } from './company/company.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 
 @Module({
@@ -18,7 +19,8 @@ import { CompanyModule } from './company/company.module';
   UserRankModule,
   FilesModule,
   NotificationsModule,
-  CompanyModule
+  CompanyModule,
+  TransactionModule
 ],
   controllers: [],
   providers: [],
