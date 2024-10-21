@@ -6,7 +6,9 @@ import { User } from 'src/entity/user.entity';
 import { UpdatePointsDto } from './dto/update-point.dto';
 import { UsersService } from './user.service';
 import { Point } from 'src/entity/point.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

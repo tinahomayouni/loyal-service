@@ -12,6 +12,7 @@ export class Point {
   @CreateDateColumn()
   earnedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.points, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.points)
   user: User;
+  
 }
