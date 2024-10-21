@@ -1,6 +1,9 @@
+// permissions.guard.ts
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Role } from 'src/entity/role.entity';
 import { User } from 'src/entity/user.entity';
+
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -9,28 +12,19 @@ export class PermissionsGuard implements CanActivate {
     canActivate(context: ExecutionContext): boolean {
         const requiredPermissions = this.reflector.get<string[]>('permissions', context.getHandler());
         if (!requiredPermissions) {
-            return true; // No permissions required
+            return true; // If no permissions are required, allow access
         }
 
         const request = context.switchToHttp().getRequest();
-        const user: User = request.user;
-        console.log('User:', user);
-        if (!user || !user.role) {
-            throw new ForbiddenException('User not found or roles not assigned.');
-        }
+        const user: User = request.user; // Assuming user is attached to the request after authentication
 
         // Check if user has the required permissions
-        const hasPermission = () => {
-            if (!user.role) return false; // If roles are not defined, return false
-        
-            return user.roles.some(role => 
-                role.permissions && role.permissions.some(permission => 
-                    requiredPermissions.includes(permission.name)
-                )
-            );
-        };
-        if (!hasPermission()) {
-            throw new ForbiddenException('You do not have the required permissions to access this resource');
+        const hasPermission = user.roles.some((role: Role) =>
+            role.permissions.some(permission => requiredPermissions.includes(permission.name)),
+        );
+
+        if (!hasPermission) {
+            throw new ForbiddenException('You do not have permission to access this resource');
         }
 
         return true;

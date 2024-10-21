@@ -17,9 +17,17 @@ export class RolesService {
     ) {}
 
     async create(createRoleDto: CreateRoleDto): Promise<Role> {
-        const permissions = await this.permissionRepository.findByIds(createRoleDto.permissions || []);
-        const role = this.roleRepository.create({ ...createRoleDto, permissions }); // Spread the dto and assign permissions
-        return await this.roleRepository.save(role);
+        // Convert permission names to permission entities
+        const permissions = createRoleDto.permissions
+            ? await this.permissionRepository.findByIds(createRoleDto.permissions.map(name => ({ name })))
+            : [];
+
+        const role = this.roleRepository.create({
+            ...createRoleDto,
+            permissions, // Assign the found permissions
+        });
+
+        return this.roleRepository.save(role);
     }
 
 

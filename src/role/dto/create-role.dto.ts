@@ -7,8 +7,12 @@ export class CreateRoleDto {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({ type: [Number], description: 'List of permission IDs' })
+    @ApiProperty({ 
+        type: [String], 
+        description: 'List of permission names', 
+        example: ['View All'] // Set example value for permissions
+    })
     @IsArray()
     @IsOptional()
-    permissions?: number[]; // Change from string[] to number[]
+    permissions?: string[]; // Change from number[] to string[]
 }

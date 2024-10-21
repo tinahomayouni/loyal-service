@@ -1,12 +1,17 @@
 // src/roles/roles.controller.ts
-import { Controller, Post, Get, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { RolesService } from './role.service';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { PermissionsGuard } from 'src/common/guards/permissions.guard';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
 
 @ApiTags('roles')
 @Controller('roles')
+@UseGuards(RolesGuard, PermissionsGuard) // Use both role and permission guards
+
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}
 
@@ -17,6 +22,7 @@ export class RolesController {
     }
 
     @Get()
+    @Permissions('View All') // Require "View All" permission
     @ApiResponse({ status: 200, description: 'List of roles' })
     findAll() {
         return this.rolesService.findAll();
