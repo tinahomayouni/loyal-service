@@ -1,10 +1,12 @@
 // src/entity/user.entity.ts
 
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable} from 'typeorm';
 import { IsEmail, IsNotEmpty, MinLength, IsIn } from 'class-validator';
 import { Point } from './point.entity';
 import { File } from './file.entity';
 import { Notification } from './notification.entity';
+import { Role } from './role.entity';
+import { Transaction } from './transaction.entity';
 
 @Entity()
 export class User {
@@ -47,4 +49,15 @@ export class User {
 
     @OneToMany(() => Notification, (noitification) => noitification.user)
     notifications: Notification[];
+
+    // Users can have many roles
+    @ManyToMany(() => Role, (role) => role.users)
+    @JoinTable()
+    roles: Role[];
+
+    // Users can have many transactions
+    @OneToMany(() => Transaction, (transaction) => transaction.user)
+    transactions: Transaction[];
+ 
 }
+

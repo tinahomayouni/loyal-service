@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class  $npmConfigName1729418729398 implements MigrationInterface {
+export class  $npmConfigName1729495111889 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
     }

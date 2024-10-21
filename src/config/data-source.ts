@@ -14,7 +14,7 @@ export const config = {
   database: process.env.DB_NAME,
   entities: [path.join(__dirname, '/../**/*.entity{.ts,.js}')],
   migrations: [path.join(__dirname, '/../database/migrations/*{.ts,.js}')],
-  synchronize:true,
+  synchronize:false,
 } satisfies TypeOrmModuleOptions;
 console.log(config);
 
