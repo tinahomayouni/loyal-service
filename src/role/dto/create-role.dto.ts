@@ -1,18 +1,13 @@
-// src/roles/dto/create-role.dto.ts
-import { IsNotEmpty, IsArray, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRoleDto {
-    @ApiProperty({ example: 'admin', description: 'Name of the role' })
-    @IsNotEmpty()
+    @ApiProperty({ example: 'Admin', description: 'The name of the role' })
     name: string;
 
     @ApiProperty({ 
-        type: [String], 
-        description: 'List of permission names', 
-        example: ['View All'] // Set example value for permissions
+        example: ['View All', 'Manage Users'], 
+        description: 'Array of permission names associated with the role',
+        type: [String]
     })
-    @IsArray()
-    @IsOptional()
-    permissions?: string[]; // Change from number[] to string[]
+    permissions: string[];
 }

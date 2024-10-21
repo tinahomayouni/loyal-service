@@ -1,4 +1,3 @@
-// src/roles/roles.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,64 +12,72 @@ export class RolesService {
         @InjectRepository(Role)
         private readonly roleRepository: Repository<Role>,
         @InjectRepository(Permission)
-        private readonly permissionRepository: Repository<Permission>, // Inject Permission repository
+        private readonly permissionRepository: Repository<Permission>,
     ) {}
 
     async create(createRoleDto: CreateRoleDto): Promise<Role> {
-        // Convert permission names to permission entities
         const permissions = createRoleDto.permissions
             ? await this.permissionRepository.findByIds(createRoleDto.permissions.map(name => ({ name })))
             : [];
 
         const role = this.roleRepository.create({
             ...createRoleDto,
-            permissions, // Assign the found permissions
+            permissions,
         });
 
         return this.roleRepository.save(role);
     }
-
-
 
     async findAll(): Promise<Role[]> {
         return await this.roleRepository.find({ relations: ['permissions'] });
     }
 
     async findOne(id: number): Promise<Role> {
-        // Fetch the role by id and load relations
         const role = await this.roleRepository.findOne({
             where: { id },
-            relations: ['permissions'], // Load the permissions relation
+            relations: ['permissions'],
         });
 
         if (!role) {
-            throw new Error('Role not found'); // Handle not found case
+            throw new Error('Role not found');
         }
 
         return role;
     }
 
-
     async update(id: number, updateRoleDto: UpdateRoleDto): Promise<Role> {
-        const role = await this.findOne(id); // Fetch the current role
+        const role = await this.findOne(id);
 
-        // Update the role name if provided
         if (updateRoleDto.name) {
             role.name = updateRoleDto.name;
         }
 
-        // Update permissions if provided
         if (updateRoleDto.permissions) {
-            // Fetch permissions from the database
             const permissions = await this.permissionRepository.findByIds(updateRoleDto.permissions);
-            role.permissions = permissions; // Assign the fetched permissions
+            role.permissions = permissions;
         }
 
-        await this.roleRepository.save(role); // Save the updated role
-        return role; // Return the updated role
+        await this.roleRepository.save(role);
+        return role;
     }
 
     async remove(id: number): Promise<void> {
         await this.roleRepository.delete(id);
+    }
+
+    async createRole(name: string, permissions: string[]): Promise<Role> {
+        // Fetch permissions from the database based on the provided names
+        const permissionsEntities = await this.permissionRepository.findByIds(
+            permissions.map(name => ({ name }))
+        );
+
+        // Create a new role with the given name and fetched permissions
+        const newRole = this.roleRepository.create({
+            name,
+            permissions: permissionsEntities,
+        });
+
+        // Save the new role to the database
+        return await this.roleRepository.save(newRole);
     }
 }

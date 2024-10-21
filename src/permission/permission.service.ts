@@ -29,4 +29,5 @@ export class PermissionService {
         const permissionsToSave = staticPermissions.map(permission => this.permissionRepository.create(permission));
         return await this.permissionRepository.save(permissionsToSave);
     }
+    
 }

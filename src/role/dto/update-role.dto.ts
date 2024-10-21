@@ -1,15 +1,14 @@
-// src/roles/dto/update-role.dto.ts
-import { IsOptional, IsString, IsArray } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { CreateRoleDto } from './create-role.dto';
 
-export class UpdateRoleDto {
-    @IsOptional()
-    @IsString()
-    @ApiProperty({ example: 'admin', description: 'Name of the role' }) // Example for role name
+export class UpdateRoleDto extends PartialType(CreateRoleDto) {
+    @ApiProperty({ example: 'Super Admin', description: 'Updated name of the role' })
     name?: string;
 
-    @IsOptional()
-    @IsArray()
-    @ApiProperty({ type: [String], example: ['View All', 'Manage Users'], description: 'List of permission names' }) // Example for permissions
-    permissions?: string[]; // Change from number[] to string[]
+    @ApiProperty({ 
+        example: ['Manage Roles'], 
+        description: 'Array of permission names to be updated for the role',
+        type: [String]
+    })
+    permissions?: string[];
 }
