@@ -58,7 +58,8 @@ export class UserRankController {
  
   @Patch('change-level')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)  @ApiOperation({ summary: 'Change the level of a user' })
+  @UseGuards(JwtAuthGuard, RolesGuard)  
+  @ApiOperation({ summary: 'Change the level of a user' })
   @ApiResponse({
       status: 200,
       description: 'User level changed successfully',
