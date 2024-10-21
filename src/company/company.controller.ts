@@ -1,20 +1,21 @@
 import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorator/user-roles.decorator';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PermissionsGuard } from 'src/common/guards/permissions.guard';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
 
 @ApiTags('company')
 @Controller('company')
-@ApiBearerAuth() // Adds the bearer token to Swagger
-@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
 export class CompanyController {
     constructor(private readonly companyService: CompanyService) {}
 
     @Post('create')
-    @Roles('super-admin') // Guarded by role
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions('View All') // Only users with the 'create-company' permission can access this endpoint   
     @ApiOperation({ summary: 'Create a new company' })
     @ApiResponse({
         status: 201,
@@ -36,7 +37,6 @@ export class CompanyController {
     }
 
     @Get('all-companies')
-    @Roles('super-admin') // Guarded by role
     @ApiOperation({ summary: 'Get all companies' })
     @ApiResponse({
         status: 200,

@@ -8,6 +8,7 @@ import { FilesModule } from './files/file.module';
 import { NotificationsModule } from './notification/noitification.module';
 import { CompanyModule } from './company/company.module';
 import { TransactionModule } from './transaction/transaction.module';
+import {  RolesModule } from './role/role.module';
 
 
 @Module({
@@ -20,7 +21,8 @@ import { TransactionModule } from './transaction/transaction.module';
   FilesModule,
   NotificationsModule,
   CompanyModule,
-  TransactionModule
+  TransactionModule,
+  RolesModule
 ],
   controllers: [],
   providers: [],
