@@ -4,8 +4,9 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorator/user-roles.decorator';
 import { CreateCompanyDto } from './dto/create-company.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('company')
 @Controller('company')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class CompanyController {

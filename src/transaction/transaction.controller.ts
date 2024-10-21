@@ -3,8 +3,9 @@ import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorator/user-roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('transaction')
 @Controller('transaction')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class TransactionController {
