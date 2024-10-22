@@ -20,7 +20,7 @@ export class UsersController {
   @Roles('super-admin')
   @UseGuards(JwtAuthGuard, RolesGuard)  
   @ApiOperation({ summary: 'Create a new user' })
-@ApiResponse({
+  @ApiResponse({
     status: 201,
     description: 'User created successfully',
     schema: {

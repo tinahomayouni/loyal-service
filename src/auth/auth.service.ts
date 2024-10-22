@@ -3,17 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
-
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { LoginUserDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register.dto';
+import { Role } from 'src/entity/role.entity'; // Import Role entity
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        @InjectRepository(Role) // Inject Role repository
+        private roleRepository: Repository<Role>,
         private jwtService: JwtService,
     ) {}
 
@@ -22,7 +23,7 @@ export class AuthService {
     }
 
     async register(createUserDto: RegisterUserDto): Promise<User> {
-        const { email, password , role } = createUserDto;
+        const { email, password, roles } = createUserDto;
 
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if (existingUser) {
@@ -30,26 +31,28 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = this.userRepository.create({ email, password: hashedPassword , role });
+
+        // Fetch Role entities based on role names provided
+        const roleEntities = await this.roleRepository.findByIds(roles); // Assuming roles is an array of role IDs
+
+        const user = this.userRepository.create({ email, password: hashedPassword, roles: roleEntities });
         return this.userRepository.save(user);
     }
-
     async login(loginUserDto: LoginUserDto): Promise<{ user: User; token: string }> {
         const { email, password } = loginUserDto;
-        const user = await this.userRepository.findOne({ where: { email } });
-        
+        const user = await this.userRepository.findOne({ where: { email }, relations: ['roles'] }); // Fetch roles if needed
+
         if (!user) {
             throw new BadRequestException('Invalid credentials');
         }
 
         const isPasswordValid = await this.validatePassword(password, user.password);
-        console.log('user',isPasswordValid);
 
         if (!isPasswordValid) {
             throw new BadRequestException('Invalid credentials');
         }
 
-        const token = this.generateJwtToken(user);  // Ensure this method is defined
+        const token = this.generateJwtToken(user);
 
         return { user, token };
     }
@@ -60,7 +63,6 @@ export class AuthService {
 
     private generateJwtToken(user: User): string {
         const payload = { sub: user.id, email: user.email };
-        console.log('payload',payload);
         return this.jwtService.sign(payload);
     }
 }

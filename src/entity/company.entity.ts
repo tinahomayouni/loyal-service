@@ -1,4 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
+import { User } from './user.entity';
+import { Role } from './role.entity';
+import { SuperAdmin } from './super-admin.entity';
 
 @Entity()
 export class Company {
@@ -19,4 +22,13 @@ export class Company {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @ManyToOne(() => SuperAdmin, (superAdmin) => superAdmin.companies)
+    superAdmin: SuperAdmin;
+
+    @OneToMany(() => User, (user) => user.company)
+    users: User[];
+
+    @OneToMany(() => Role, (role) => role.company)
+    roles: Role[];
 }

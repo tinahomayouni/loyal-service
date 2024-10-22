@@ -1,12 +1,14 @@
 // src/entity/user.entity.ts
 
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable, ManyToOne} from 'typeorm';
 import { IsEmail, IsNotEmpty, MinLength, IsIn } from 'class-validator';
 import { Point } from './point.entity';
 import { File } from './file.entity';
 import { Notification } from './notification.entity';
 import { Role } from './role.entity';
 import { Transaction } from './transaction.entity';
+import { Company } from './company.entity';
+import { SuperAdmin } from './super-admin.entity';
 
 @Entity()
 export class User {
@@ -28,11 +30,7 @@ export class User {
     @Column({ type: 'varchar', default: 'bronze' })
     badge: string;
 
-    @Column({ type: 'varchar', default: 'customer', nullable: true  })
-    @IsIn(['admin', 'customer'], {
-        message: 'Role must be either admin or customer',
-    })
-    role: string;
+
 
     @CreateDateColumn()
     createdAt: Date;
@@ -52,12 +50,18 @@ export class User {
 
     // Users can have many roles
     @ManyToMany(() => Role, (role) => role.users, { eager: true })
-    @JoinTable()
-    roles: Role[];
+@JoinTable()
+roles: Role[];
+
 
     // Users can have many transactions
     @OneToMany(() => Transaction, (transaction) => transaction.user)
     transactions: Transaction[];
- 
+
+    @ManyToOne(() => Company, company => company.users)
+    company: Company;
+
+    @ManyToOne(() => SuperAdmin, (superAdmin) => superAdmin.users)
+    superAdmin: SuperAdmin;
 }
 

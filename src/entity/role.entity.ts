@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne } from 'typeorm';
 import { Permission } from './permission.entity';
 import { User } from './user.entity';
+import { Company } from './company.entity';
+import { SuperAdmin } from './super-admin.entity';
 
 @Entity()
 export class Role {
@@ -16,6 +18,11 @@ export class Role {
   permissions: Permission[];
 
     // Roles can belong to many users
-    @ManyToMany(() => User, (user) => user.roles)
+    @ManyToMany(() => User, (users) => users.roles)
     users: User[];
+    @ManyToOne(() => Company, company => company.roles)
+  company: Company;
+
+  @ManyToOne(() => SuperAdmin, (superAdmin) => superAdmin.roles)
+  superAdmin: SuperAdmin;
 }

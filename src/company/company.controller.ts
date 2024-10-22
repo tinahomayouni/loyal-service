@@ -1,12 +1,11 @@
 import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { Roles } from 'src/common/decorator/user-roles.decorator';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { PermissionsGuard } from 'src/common/guards/permissions.guard';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
-import { RolesGuard } from 'src/common/guards/roles.guard';
+import { CreateCompanyDto } from './dto/create-company.dto';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('company')
 @Controller('company')
@@ -37,12 +36,12 @@ export class CompanyController {
     }
 
     @Get('all-companies')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Permissions('create-company')
+    @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+    //@Permissions('view-companies')
     @ApiOperation({ summary: 'Get all companies' })
     @ApiResponse({
         status: 200,
-        description: 'List of companies retrieved successfully',
+        description: 'List of companies retrieved successfully, including roles and permissions',
         schema: {
             example: {
                 companies: [
@@ -51,12 +50,30 @@ export class CompanyController {
                         name: 'Tech Solutions Inc.',
                         address: '1234 Main St, Tech City',
                         contactEmail: 'contact@techsolutions.com',
-                    },
-                    {
-                        id: 2,
-                        name: 'Innovative Designs LLC',
-                        address: '4567 Elm St, Innovation Town',
-                        contactEmail: 'info@innodesigns.com',
+                        users: [
+                            {
+                                id: 1,
+                                email: 'admin@techsolutions.com',
+                                roles: [
+                                    {
+                                        id: 1,
+                                        name: 'admin',
+                                        permissions: [
+                                            {
+                                                id: 1,
+                                                name: 'create-company',
+                                                description: 'Allows the creation of companies',
+                                            },
+                                            {
+                                                id: 2,
+                                                name: 'view-companies',
+                                                description: 'Allows viewing companies',
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
                     },
                 ],
             },

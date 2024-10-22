@@ -23,7 +23,9 @@ export class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    async findAllCompanies(): Promise<Company[]> {
-        return this.companyRepository.find();
-    }
+    async findAllCompanies() {
+        return this.companyRepository.find({
+          relations: ['roles', 'roles.permissions'],
+        });
+      }
 }
