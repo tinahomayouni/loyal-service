@@ -13,9 +13,8 @@ export class Role {
     name: string;
 
     // Roles can have many permissions
-    @ManyToMany(() => Permission, { eager: true })
-  @JoinTable()
-  permissions: Permission[];
+    @ManyToMany(() => Permission, permission => permission.roles)
+    permissions: Permission[]; // Ensure this is an array of Permission entities
 
     // Roles can belong to many users
     @ManyToMany(() => User, (users) => users.roles)
