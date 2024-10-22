@@ -51,7 +51,7 @@ export class User {
     notifications: Notification[];
 
     // Users can have many roles
-    @ManyToMany(() => Role, (role) => role.users)
+    @ManyToMany(() => Role, (role) => role.users, { eager: true })
     @JoinTable()
     roles: Role[];
 

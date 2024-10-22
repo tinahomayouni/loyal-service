@@ -6,6 +6,7 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PermissionsGuard } from 'src/common/guards/permissions.guard';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @ApiTags('company')
 @Controller('company')
@@ -14,8 +15,7 @@ export class CompanyController {
     constructor(private readonly companyService: CompanyService) {}
 
     @Post('create')
-    @UseGuards(JwtAuthGuard, PermissionsGuard)
-    @Permissions('View All') // Only users with the 'create-company' permission can access this endpoint   
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Create a new company' })
     @ApiResponse({
         status: 201,
@@ -37,6 +37,8 @@ export class CompanyController {
     }
 
     @Get('all-companies')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Permissions('create-company')
     @ApiOperation({ summary: 'Get all companies' })
     @ApiResponse({
         status: 200,

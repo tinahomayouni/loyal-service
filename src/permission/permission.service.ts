@@ -1,33 +1,47 @@
-// permission.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Permission } from 'src/entity/permission.entity';
 import { Repository } from 'typeorm';
+import { Permission } from 'src/entity/permission.entity';
+import { CreatePermissionDto } from './dto/create-permission.dto';
+import { UpdatePermissionDto } from './dto/update-permission.dto';
 
 @Injectable()
 export class PermissionService {
-    constructor(
-        @InjectRepository(Permission) private permissionRepository: Repository<Permission>,
-    ) {}
+  constructor(
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
+  ) {}
 
-    // Method to create static permissions
-    async createStaticPermissions() {
-        const staticPermissions = [
-            { name: "View All" },
-            { name: "Manage Roles" },
-            { name: "Manage Users" },
-            { name: "Manage Transactions" }
-        ];
+  // Create a permission
+  async create(createPermissionDto: CreatePermissionDto): Promise<Permission> {
+    const permission = this.permissionRepository.create(createPermissionDto);
+    return this.permissionRepository.save(permission);
+  }
 
-        const existingPermissions = await this.permissionRepository.find();
-        
-        if (existingPermissions.length > 0) {
-            console.log('Static permissions already exist. Skipping creation.');
-            return existingPermissions; // Return existing permissions if they already exist
-        }
+  // Get all permissions
+  async findAll(): Promise<Permission[]> {
+    return this.permissionRepository.find();
+  }
 
-        const permissionsToSave = staticPermissions.map(permission => this.permissionRepository.create(permission));
-        return await this.permissionRepository.save(permissionsToSave);
+  // Get a permission by ID
+  async findOne(id: number): Promise<Permission> {
+    const permission = await this.permissionRepository.findOne({ where: { id } });
+    if (!permission) {
+      throw new NotFoundException(`Permission with ID ${id} not found`);
     }
-    
+    return permission;
+  }
+
+  // Update a permission
+  async update(id: number, updatePermissionDto: UpdatePermissionDto): Promise<Permission> {
+    const permission = await this.findOne(id);
+    Object.assign(permission, updatePermissionDto);
+    return this.permissionRepository.save(permission);
+  }
+
+  // Delete a permission
+  async remove(id: number): Promise<void> {
+    const permission = await this.findOne(id);
+    await this.permissionRepository.remove(permission);
+  }
 }
