@@ -18,7 +18,6 @@ export class RolesService {
     async create(createRoleDto: CreateRoleDto): Promise<Role> {
         const permissions = await this.permissionRepository.find({where:{ name: In(createRoleDto.permissions)} });
         
-console.log(permissions, 'permissions');
         const role = this.roleRepository.create({
             ...createRoleDto,
             permissions,
