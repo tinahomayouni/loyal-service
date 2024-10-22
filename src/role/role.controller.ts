@@ -5,7 +5,6 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { RolesService } from './role.service';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { PermissionsGuard } from 'src/common/guards/permissions.guard';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Role } from 'src/entity/role.entity';
 
 @ApiTags('roles')
