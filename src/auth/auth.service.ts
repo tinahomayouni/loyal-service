@@ -24,20 +24,21 @@ export class AuthService {
 
     async register(createUserDto: RegisterUserDto): Promise<User> {
         const { email, password, roles } = createUserDto;
-
+    
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if (existingUser) {
             throw new BadRequestException('User already exists');
         }
-
+    
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Fetch Role entities based on role names provided
-        const roleEntities = await this.roleRepository.findByIds(roles); // Assuming roles is an array of role IDs
-
+    
+        // Fetch Role entities based on role IDs provided
+        const roleEntities = await this.roleRepository.findByIds(roles); // This expects an array of role IDs
+    
         const user = this.userRepository.create({ email, password: hashedPassword, roles: roleEntities });
         return this.userRepository.save(user);
     }
+    
     async login(loginUserDto: LoginUserDto): Promise<{ user: User; token: string }> {
         const { email, password } = loginUserDto;
         const user = await this.userRepository.findOne({ where: { email }, relations: ['roles'] }); // Fetch roles if needed
