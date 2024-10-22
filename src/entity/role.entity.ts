@@ -11,10 +11,7 @@ export class Role {
 
     @Column({ unique: true })
     name: string;
-
-    // Roles can have many permissions
-    @ManyToMany(() => Permission, permission => permission.roles)
-    permissions: Permission[]; // Ensure this is an array of Permission entities
+   
 
     // Roles can belong to many users
     @ManyToMany(() => User, (users) => users.roles)
@@ -24,4 +21,10 @@ export class Role {
 
   @ManyToOne(() => SuperAdmin, (superAdmin) => superAdmin.roles)
   superAdmin: SuperAdmin;
+
+  
+  @ManyToMany(() => Permission, permission => permission.roles)
+  @JoinTable()
+
+  permissions: Permission[]; // Ensure this is an array of Permission entities
 }

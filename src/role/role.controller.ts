@@ -22,7 +22,6 @@ export class RolesController {
     }
 
     @Get()
-    @Permissions('View All')
     @ApiResponse({ status: 200, description: 'List of roles', type: [Role] })
     @ApiResponse({ status: 404, description: 'No roles found' })
     findAll() {
