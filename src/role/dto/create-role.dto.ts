@@ -1,19 +1,18 @@
-import { IsNotEmpty, IsArray } from 'class-validator';
+import { IsNotEmpty, IsArray, IsInt, ArrayNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRoleDto {
-    @ApiProperty({
-        example: 'Admin',
-        description: 'The name of the role',
-    })
+export class UpdateRoleDto {
+    @ApiProperty({ example: 'Admin', description: 'Name of the role' })
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({
-        example: ['CREATE_USER', 'DELETE_USER', 'EDIT_PROFILE'],
-        description: 'List of permission names associated with this role',
-        type: [String],
+    @ApiProperty({ 
+        example: [1, 2, 3], 
+        description: 'Array of permission IDs', 
+        type: [Number] 
     })
     @IsArray()
-    permissions: string[]; // Assuming permissions are received as an array of strings
+    @ArrayNotEmpty() // Ensure it's not an empty array
+    @IsInt({ each: true }) // Ensure each element is a number
+    permissions: number[]; // Permissions as array of IDs
 }

@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Role } from 'src/entity/role.entity';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+
 import { Permission } from 'src/entity/permission.entity';
+import { CreateRoleDto } from './dto/update-role.dto';
+import { UpdateRoleDto } from './dto/create-role.dto';
 @Injectable()
 export class RolesService {
     constructor(
@@ -16,15 +17,22 @@ export class RolesService {
 
 
     async create(createRoleDto: CreateRoleDto): Promise<Role> {
-        const permissions = await this.permissionRepository.find({where:{ name: In(createRoleDto.permissions)} });
-        
+        const permissions = await this.permissionRepository.find({
+            where: { id: In(createRoleDto.permissions) } // Find permissions by ID
+        });
+    
+        if (permissions.length !== createRoleDto.permissions.length) {
+            throw new Error('Some permission IDs are invalid'); // Throw an error if permissions don't match
+        }
+    
         const role = this.roleRepository.create({
-            ...createRoleDto,
+            name: createRoleDto.name,
             permissions,
         });
-
-        return this.roleRepository.save(role);
+    
+        return await this.roleRepository.save(role); // Ensure that you return the saved role
     }
+    
 
     async findAll(): Promise<Role[]> {
         return await this.roleRepository.find({ relations: ['permissions'] });

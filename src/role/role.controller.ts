@@ -1,11 +1,10 @@
 import { Controller, Post, Get, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { RolesService } from './role.service';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { PermissionsGuard } from 'src/common/guards/permissions.guard';
 import { Role } from 'src/entity/role.entity';
+import { CreateRoleDto } from './dto/update-role.dto';
 
 @ApiTags('roles')
 @Controller('roles')
@@ -37,7 +36,7 @@ export class RolesController {
     @Put(':id')
     @ApiResponse({ status: 200, description: 'Role updated successfully', type: Role })
     @ApiResponse({ status: 404, description: 'Role not found' })
-    update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+    update(@Param('id') id: string, @Body() updateRoleDto: CreateRoleDto) {
         return this.rolesService.update(+id, updateRoleDto);
     }
 
