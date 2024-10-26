@@ -50,8 +50,8 @@ export class User {
 
     // Users can have many roles
     @ManyToMany(() => Role, (role) => role.users, { eager: true })
-@JoinTable()
-roles: Role[];
+    @JoinTable()
+    roles: Role[];
 
 
     // Users can have many transactions

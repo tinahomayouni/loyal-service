@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from 'src/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -33,10 +33,19 @@ export class AuthService {
         const hashedPassword = await bcrypt.hash(password, 10);
     
         // Fetch Role entities based on role IDs provided
-        const roleEntities = await this.roleRepository.findByIds(roles); // This expects an array of role IDs
-    
-        const user = this.userRepository.create({ email, password: hashedPassword, roles: roleEntities });
-        return this.userRepository.save(user);
+        const roleEntities = await this.roleRepository.find({
+            where: {
+              id: In(roles)
+            }
+          })
+          
+          const user = this.userRepository.create({ 
+            email, 
+            password: hashedPassword, 
+            roles: roleEntities 
+          });
+          
+          return this.userRepository.save(user);
     }
     
     async login(loginUserDto: LoginUserDto): Promise<{ user: User; token: string }> {
